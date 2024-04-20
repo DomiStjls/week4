@@ -14,11 +14,11 @@ const PORT = 3000;
 connectToDatabase();
 
 app.use(
-  cors, 
+  cors,
   bodyParser.json(),
   express.static(path.join(__dirname, 'public')),
-  usersRouter, 
-  gamesRouter, 
+  usersRouter,
+  gamesRouter,
   categoriesRouter
 );
 
