@@ -22,4 +22,22 @@ const findUserById = async (req, res, next) => {
     res.status(404).send({ message: "User not found" });
   }
 }
-module.exports = {findAllUsers, createUser, findUserById};
+
+const updateUser = async (req, res, next) => {
+  try {
+    req.user = await users.findByIdAndUpdate(req.params.id, req.body);
+    next();
+  } catch (error) {
+    res.status(400).send({ message: "Error updating user" });
+  }
+}
+
+const deleteUser = async (req, res, next) => {
+  try {
+    req.user = await users.findByIdAndDelete(req.params.id);
+    next();
+  } catch (error) {
+    res.status(400).send({ message: "Error deleting user" });
+  }
+}
+module.exports = {findAllUsers, createUser, findUserById, updateUser, deleteUser};

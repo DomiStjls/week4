@@ -22,4 +22,22 @@ const findCategoryById = async (req, res, next) => {
     res.status(404).send({ message: "Category not found" });
   }
 }
-module.exports = {findAllCategories, createCategory, findCategoryById};
+
+const updateCategory = async (req, res, next) => {
+  try {
+    req.category = await categories.findByIdAndUpdate(req.params.id, req.body);
+    next();
+  } catch (error) {
+    res.status(400).send({ message: "Error updating category" });
+  }
+}
+
+const deleteCategory = async (req, res, next) => {
+  try {
+    req.category = await categories.findByIdAndDelete(req.params.id);
+    next();
+  } catch (error) {
+    res.status(400).send({ message: "Error deleting category" });
+  }
+}
+module.exports = {findAllCategories, createCategory, findCategoryById, updateCategory, deleteCategory};
