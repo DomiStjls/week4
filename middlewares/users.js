@@ -1,9 +1,25 @@
-const users = require('../models/user');
+const users = require("../models/user");
+const bcrypt = require("bcryptjs");
 
+
+const hashPassword = async (req, res, next) => {
+  try {
+    // Создаём случайную строку длиной в десять символов
+    const salt = await bcrypt.genSalt(10);
+    // Хешируем пароль
+    const hash = await bcrypt.hash(req.body.password, salt);
+    // Полученный в запросе пароль подменяем на хеш
+    req.body.password = hash;
+    next();
+  } catch (error) {
+    res.status(400).send({ message: "Ошибка хеширования пароля" });
+  }
+}; 
 const findAllUsers = async (req, res, next) => {
-  req.usersArray = await users.find({});
+  console.log("GET /api/users");
+  req.usersArray = await users.find({}, { password: 0 });
   next();
-}
+};
 const createUser = async (req, res, next) => {
   console.log("POST /users");
   try {
@@ -15,13 +31,14 @@ const createUser = async (req, res, next) => {
   }
 }
 const findUserById = async (req, res, next) => {
+  console.log("GET /api/users/:id");
   try {
-    req.user = await users.findById(req.params.id);
+    req.user = await users.findById(req.params.id, { password: 0 });
     next();
   } catch (error) {
-    res.status(404).send({ message: "User not found" });
+    res.status(404).send("User not found");
   }
-}
+};
 
 const updateUser = async (req, res, next) => {
   try {
@@ -41,8 +58,8 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
-const checkEmptyNameAndEmail = async (req, res, next) => {
-  if (!req.body.username || !req.body.email) {
+const checkEmptyNameAndEmailAndPassword = async (req, res, next) => {
+  if (!req.body.username || !req.body.email || !req.body.password) {
     res.status(400).send({ message: "Введите имя и email" });
   } else {
     next();
@@ -74,4 +91,4 @@ const checkIfUsersAreSafe = async (req, res, next) => {
       .send({ message: "Нельзя удалять пользователей или добавлять больше одного пользователя" });
   }
 };
-module.exports = {findAllUsers, createUser, findUserById, updateUser, deleteUser, checkEmptyNameAndEmail, checkIsUserExists, checkIfUsersAreSafe};
+module.exports = {findAllUsers, createUser, findUserById, updateUser, deleteUser, checkIsUserExists, checkIfUsersAreSafe,checkEmptyNameAndEmailAndPassword, hashPassword};
