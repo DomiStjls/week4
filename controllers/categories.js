@@ -13,7 +13,7 @@ const sendCategoryById = (req, res) => {
 
 const sendCategoryUpdated = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  res.end({ message: 'Категория обновлена' });
+  res.end(JSON.stringify(req.category));
 };
 
 const sendCategoryDeleted = (req, res) => {

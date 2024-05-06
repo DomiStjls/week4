@@ -14,7 +14,7 @@ const hashPassword = async (req, res, next) => {
   } catch (error) {
     res.status(400).send({ message: "Ошибка хеширования пароля" });
   }
-}; 
+};
 const findAllUsers = async (req, res, next) => {
   console.log("GET /api/users");
   req.usersArray = await users.find({}, { password: 0 });
@@ -58,14 +58,21 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
-const checkEmptyNameAndEmailAndPassword = async (req, res, next) => {
-  if (!req.body.username || !req.body.email || !req.body.password) {
+const checkEmptyNameAndEmail = async (req, res, next) => {
+  if (!req.body.username || !req.body.email) {
     res.status(400).send({ message: "Введите имя и email" });
   } else {
     next();
   }
 };
 
+const checkEmptyNameAndEmailAndPassword = async (req, res, next) => {
+  if (!req.body.username || !req.body.email || !req.body.password) {
+    res.status(400).send({ message: "Введите имя и email и password" });
+  } else {
+    next();
+  }
+};
 const checkIsUserExists = async (req, res, next) => {
   const isInArray = req.usersArray.find((user) => {
     return req.body.email === user.email;
@@ -91,4 +98,4 @@ const checkIfUsersAreSafe = async (req, res, next) => {
       .send({ message: "Нельзя удалять пользователей или добавлять больше одного пользователя" });
   }
 };
-module.exports = {findAllUsers, createUser, findUserById, updateUser, deleteUser, checkIsUserExists, checkIfUsersAreSafe,checkEmptyNameAndEmailAndPassword, hashPassword};
+module.exports = { findAllUsers, createUser, findUserById, updateUser, deleteUser, checkIsUserExists, checkIfUsersAreSafe, checkEmptyNameAndEmailAndPassword, checkEmptyNameAndEmail, hashPassword };
