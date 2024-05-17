@@ -5,23 +5,23 @@ const apiRouter = require('./routes/apiRouter');
 const usersRouter = require('./routes/users');
 const gamesRouter = require('./routes/games');
 const categoriesRouter = require('./routes/categories');
-
+const pagesRouter = require('./routes/pages');
 const connectToDatabase = require('./database/connect');
 const cors = require('./middlewares/cors');
+const cookieParser = require("cookie-parser");
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 connectToDatabase();
 
 app.use(
   cors,
+  cookieParser(),
   bodyParser.json(),
-  usersRouter,
-  gamesRouter,
-  categoriesRouter,
+  pagesRouter,
   apiRouter,
-  express.static(path.join(__dirname, 'public')),
+  express.static(path.join(__dirname, "public"))
 );
 
 app.listen(PORT);
